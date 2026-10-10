@@ -109,7 +109,7 @@ $("#checkout-form").addEventListener("submit", async (e) => {
   } catch (err) {
     msg.innerHTML = `<div class="notice bad">✕ ${esc(err.message)}</div>`;
   } finally {
-    btn.textContent = "Checkout"; btn.disabled = !cart.items.length;
+    btn.textContent = "Place order"; btn.disabled = !cart.items.length;
   }
 });
 
