@@ -50,8 +50,15 @@ async function loadProducts(q = "") {
     $("#grid").innerHTML = `<div class="empty">Couldn't load products: ${esc(e.message)}</div>`;
   }
 }
+let sortBy = "featured";
+function visibleProducts() {
+  if (sortBy === "price-asc") return [...products].sort((a, b) => a.final_cents - b.final_cents);
+  if (sortBy === "price-desc") return [...products].sort((a, b) => b.final_cents - a.final_cents);
+  return products;
+}
 function renderGrid() {
-  $("#grid").innerHTML = products.length ? products.map((p) => `
+  const list = visibleProducts();
+  $("#grid").innerHTML = list.length ? list.map((p) => `
     <div class="prod">
       <div class="img" style="background:${esc(p.color)}">${esc(p.emoji)}</div>
       <div class="info">
@@ -66,6 +73,7 @@ function renderGrid() {
 }
 let searchTimer;
 $("#search").addEventListener("input", (e) => { clearTimeout(searchTimer); searchTimer = setTimeout(() => loadProducts(e.target.value.trim()), 250); });
+$("#sort").addEventListener("change", (e) => { sortBy = e.target.value; renderGrid(); });
 
 // ---------- cart ----------
 let cart = { items: [], count: 0, total_cents: 0 };
