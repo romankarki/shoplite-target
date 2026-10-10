@@ -13,7 +13,7 @@ configMapGenerator:
       - GIT_BRANCH=main
       - PREVIEW_LABEL=
       - FEEDBACK_WEBHOOK_URL=
-      - FEATURES=            # feature flags, e.g. wishlist,swipe (see SIDEKICK.md)
+      - FEATURES=wishlist,swipe            # feature flags, e.g. wishlist,swipe (see SIDEKICK.md)
 secretGenerator:
   - name: shoplite-db
     literals:
