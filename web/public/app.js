@@ -153,7 +153,7 @@ $("#theme-btn").onclick = () => {
   try {
     const h = await api("/health");
     if (h.preview) { $("#preview-bar").hidden = false; $("#preview-bar").innerHTML = `🔍 Preview environment <b>${esc(h.preview)}</b> · branch <code>${esc(h.branch)}</code>`; }
-    $("#footer").textContent = `ShopLite ${h.version} · ${h.branch}`;
+    $("#footer").textContent = "Powered by Sidekick";
     if (window.onFeatures) await window.onFeatures(h.features || []);  // feature flags → features.js
   } catch (e) { $("#footer").textContent = "API unreachable"; }
   loadProducts();
