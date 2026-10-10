@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - db.yaml
+  - api.yaml
+  - web.yaml
+labels:
+  - pairs: { app.kubernetes.io/part-of: shoplite }
+configMapGenerator:
+  - name: shoplite-config
+    literals:
+      - APP_VERSION=dev
+      - GIT_BRANCH=main
+      - PREVIEW_LABEL=
+      - FEEDBACK_WEBHOOK_URL=
+secretGenerator:
+  - name: shoplite-db
+    literals:
+      - password=shoplite
+# Overlays (or scripts/k8s-preview.sh) set namespace, image registry/tags and config per environment
+images:
+  - { name: shoplite-db, newTag: latest }
+  - { name: shoplite-api, newTag: latest }
+  - { name: shoplite-web, newTag: latest }

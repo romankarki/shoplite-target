@@ -1,0 +1,44 @@
+# Postgres for ShopLite. emptyDir = throwaway data, ideal for per-branch previews.
+# For a long-lived environment swap the volume for a PersistentVolumeClaim (or point DATABASE_URL at RDS).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  labels: { app.kubernetes.io/name: shoplite, app.kubernetes.io/component: db }
+spec:
+  replicas: 1
+  strategy: { type: Recreate }
+  selector:
+    matchLabels: { app.kubernetes.io/name: shoplite, app.kubernetes.io/component: db }
+  template:
+    metadata:
+      labels: { app.kubernetes.io/name: shoplite, app.kubernetes.io/component: db }
+    spec:
+      containers:
+        - name: postgres
+          image: shoplite-db
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 5432 }]
+          env:
+            - { name: POSTGRES_DB, value: shoplite }
+            - { name: POSTGRES_USER, value: shoplite }
+            - name: POSTGRES_PASSWORD
+              valueFrom: { secretKeyRef: { name: shoplite-db, key: password } }
+          readinessProbe:
+            exec: { command: ["pg_isready", "-U", "shoplite", "-d", "shoplite"] }
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 50m, memory: 128Mi }
+            limits: { memory: 512Mi }
+          volumeMounts: [{ name: data, mountPath: /var/lib/postgresql/data }]
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  selector: { app.kubernetes.io/name: shoplite, app.kubernetes.io/component: db }
+  ports: [{ port: 5432, targetPort: 5432 }]
