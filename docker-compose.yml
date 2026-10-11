@@ -30,7 +30,7 @@ services:
       GIT_BRANCH: ${GIT_BRANCH:-main}
       PREVIEW_LABEL: ${PREVIEW_LABEL:-}
       FEEDBACK_WEBHOOK_URL: ${FEEDBACK_WEBHOOK_URL:-}
-      FEATURES: ${FEATURES:-}
+      FEATURES: ${FEATURES:-wishlist}
     depends_on:
       db:
         condition: service_healthy
